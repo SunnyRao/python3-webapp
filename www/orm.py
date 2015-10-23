@@ -7,6 +7,8 @@ import asyncio, logging
 
 import aiomysql
 
+MYSQL_PORT = 3306
+
 def log(sql, args = ()):
 	logging.info('SQL: %s' % sql)
 
@@ -19,7 +21,7 @@ def create_pool(loop, **kw):
 	global __pool
 	__pool = yield from aiomysql.create_pool(
 		host = kw.get('host', 'localhost'),
-		port = kw.get('port', 3360),
+		port = kw.get('port', MYSQL_PORT),
 		user = kw['user'],
 		password = kw['password'],
 		db = kw['db'],
@@ -42,7 +44,7 @@ def select(sql, args, size = None):
 			rs = yield from cur.fetchall()
 		yield from cur.close()
 		logging.info('rows returned: %s' % len(rs))
-		retrun rs
+		return rs
 
 @asyncio.coroutine
 def execute(sql, args, autocommit = True):
