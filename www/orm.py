@@ -7,8 +7,6 @@ import asyncio, logging
 
 import aiomysql
 
-MYSQL_PORT = 3306
-
 def log(sql, args = ()):
 	logging.info('SQL: %s' % sql)
 
@@ -21,7 +19,7 @@ def create_pool(loop, **kw):
 	global __pool
 	__pool = yield from aiomysql.create_pool(
 		host = kw.get('host', 'localhost'),
-		port = kw.get('port', MYSQL_PORT),
+		port = kw.get('port', 3306),
 		user = kw['user'],
 		password = kw['password'],
 		db = kw['db'],
@@ -183,7 +181,7 @@ class Model(dict, metaclass = ModelMetaclass):
 		if where:
 			sql.append('where')
 			sql.append(where)
-		if qrgs is None:
+		if args is None:
 			args = []
 		orderBy = kw.get('orderBy', None)
 		if orderBy:
